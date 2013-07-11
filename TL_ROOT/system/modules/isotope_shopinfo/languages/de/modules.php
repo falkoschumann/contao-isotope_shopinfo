@@ -1,4 +1,4 @@
-<?php if (!defined('TL_ROOT')) die('You cannot access this file directly!');
+<?php if (!defined('TL_ROOT')) die('You can not access this file directly!');
 
 /**
  * Isotope Shop Info Extension for Contao
@@ -38,7 +38,9 @@
 /**
  * Frontend modules
  */
-$GLOBALS['FE_MOD']['isotope']['iso_paymentinfo']	= 'ModuleIsotopePaymentInfo';
-$GLOBALS['FE_MOD']['isotope']['iso_shippinginfo']	= 'ModuleIsotopeShippingInfo';
+$GLOBALS['TL_LANG']['FMD']['iso_paymentinfo'][0]	= 'Zahlungsarten';
+$GLOBALS['TL_LANG']['FMD']['iso_paymentinfo'][1]	= 'Zeigt Informationen über ausgewählte Zahlungsmethoden.';
+$GLOBALS['TL_LANG']['FMD']['iso_shippinginfo'][0]	= 'Versandarten';
+$GLOBALS['TL_LANG']['FMD']['iso_shippinginfo'][1]	= 'Zeigt Informationen über ausgewählte Versandarten.';
 
 ?>

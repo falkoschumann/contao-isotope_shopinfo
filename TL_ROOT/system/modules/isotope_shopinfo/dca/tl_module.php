@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * PHP version 5
- * @copyright  2013 Falko Schumann
+ * @copyright  2013, Falko Schumann <http://www.muspellheim.de>
  * @author     Falko Schumann <falko.schumann@muspellheim.de>
  * @package    IsotopeShopInfo
  * @license    BSD-2-Clause 

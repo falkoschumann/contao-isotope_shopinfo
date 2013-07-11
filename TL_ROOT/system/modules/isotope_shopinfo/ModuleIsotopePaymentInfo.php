@@ -27,7 +27,7 @@
  * POSSIBILITY OF SUCH DAMAGE.
  *
  * PHP version 5
- * @copyright  2013 Falko Schumann
+ * @copyright  2013, Falko Schumann <http://www.muspellheim.de>
  * @author     Falko Schumann <falko.schumann@muspellheim.de>
  * @package    IsotopeShopInfo
  * @license    BSD-2-Clause 
@@ -36,9 +36,9 @@
 
 
 /**
- * Show information about selected payment methods. 
+ * Show information about selected payment methods.
  *
- * @copyright  2013 Falko Schumann 
+ * @copyright  2013, Falko Schumann <http://www.muspellheim.de>
  * @author     Falko Schumann <falko.schumann@muspellheim.de>
  * @package    Controller
  */
@@ -52,77 +52,125 @@ class ModuleIsotopePaymentInfo extends ModuleIsotope
 
 
 	/**
-	 * Display a wildcard in the back end.
-	 * 
 	 * @return string
 	 */
 	public function generate()
 	{
 		if (TL_MODE == 'BE')
 		{
-			$objTemplate = new BackendTemplate('be_wildcard');
-			$objTemplate->wildcard = '### ISOTOPE PAYMENT INFO ###';
-			$objTemplate->title = $this->headline;
-			$objTemplate->id = $this->id;
-			$objTemplate->link = $this->name;
-			$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
-			return $objTemplate->parse();
+			return $this->generateBackendWildcard();
 		}
-	
 		return parent::generate();
 	}
 
+	
+	/**
+	 * @return string
+	 */
+	private function generateBackendWildcard()
+	{
+		$objTemplate = new BackendTemplate('be_wildcard');
+		$objTemplate->wildcard = '### ISOTOPE PAYMENT INFO ###';
+		$objTemplate->title = $this->headline;
+		$objTemplate->id = $this->id;
+		$objTemplate->link = $this->name;
+		$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
+		return $objTemplate->parse();
+	}
+	
 
 	protected function compile()
 	{
- 		$arrModules = array();
- 		$arrModuleIds = deserialize($this->iso_payment_modules);
- 		if (is_array($arrModuleIds) && !empty($arrModuleIds))
- 		{
+		$arrModules = $this->getModules();
+		if (empty($arrModules))
+			$this->compileMessageNoModules();
+		else
+			$this->compileModules($arrModules);
+	}
+
+
+	/**
+	 * Return an array of associative arrays with keys id, label, price and note.
+	 * 
+	 * @return array
+	 */
+	private function getModules()
+	{
+		$arrModules = array();
+		$arrModuleIds = deserialize($this->iso_payment_modules);
+		if (is_array($arrModuleIds) && !empty($arrModuleIds))
+		{
 			$arrModuleIds = array_map('intval', $arrModuleIds);
-			$objModules = $this->Database->execute("SELECT * FROM tl_iso_payment_modules WHERE id IN (" . implode(',', $arrModuleIds) . ")" . (BE_USER_LOGGED_IN === true ? '' : " AND enabled='1'") . " ORDER BY " . $this->Database->findInSet('id', $arrModuleIds));
+			$objModules = $this->Database->execute(
+					'SELECT * ' .
+					'FROM tl_iso_payment_modules ' .
+					'WHERE id IN (' . implode(',', $arrModuleIds) . ')' . (BE_USER_LOGGED_IN === true ? ' ' : " AND enabled='1' ") .
+					'ORDER BY ' . $this->Database->findInSet('id', $arrModuleIds));
 			while ($objModules->next())
 			{
-				$strClass = $GLOBALS['ISO_PAY'][$objModules->type];
-				if (!strlen($strClass) || !$this->classFileExists($strClass))
-				{
+				$objModule = $this->createModule($objModules);
+				if (!$objModule)
 					continue;
-				}
 
-				$objModule = new $strClass($objModules->row());
-				if (!$objModule->available)
-				{
-					continue;
-				}
-
-	 			$fltPrice = $objModule->price;
-	 			$strSurcharge = $objModule->surcharge;
-	 			$strPrice = ($fltPrice != 0) ? (($strSurcharge == '' ? '' : ' ('.$strSurcharge.')') . ': '.$this->Isotope->formatPriceWithCurrency($fltPrice)) : '';
-	 			$arrModules[] = array
-	 			(
-	 				'id'		=> $objModule->id,
-	 				'label'		=> $objModule->label,
-	 				'price'		=> $strPrice,
-	 				'note'		=> $objModule->note,
-	 			);
+				$arrModules[] = array
+				(
+					'id'		=> $objModule->id,
+					'label'		=> $objModule->label,
+					'price'		=> $this->calculatePrice($objModule),
+					'note'		=> $objModule->note,
+				);
 			}
- 		}
-
-		if (empty($arrModules))
-		{
-			$this->Template = new FrontendTemplate('mod_message');
-			$this->Template->class = 'payment_method';
-			$this->Template->hl = 'h2';
-			$this->Template->headline = $GLOBALS['TL_LANG']['ISO']['payment_method'];
-			$this->Template->type = 'error';
-			$this->Template->message = $GLOBALS['TL_LANG']['MSC']['noPaymentModules'];
 		}
-		else
-		{
-			$this->Template->paymentMethods = $arrModules;
-		}
+		return $arrModules;
 	}
 	
+	/**
+	 * @param Database_Result $result
+	 * @return IsotopePayment|void
+	 */
+	private function createModule($result)
+	{
+		$strClass = $GLOBALS['ISO_PAY'][$result->type];
+		if (strlen($strClass) && $this->classFileExists($strClass))
+			return new $strClass($result->row());
+
+		return;
+	}
+
+	/**
+	 * @param IsotopePayment $objModule
+	 * @return string
+	 */
+	private function calculatePrice(&$objModule)
+	{
+		$fltPrice = $objModule->price;
+		$strSurcharge = $objModule->surcharge;
+		if ($fltPrice != 0) 
+			return (($strSurcharge == '' ? '' : ' ('.$strSurcharge.')') . ': '.$this->Isotope->formatPriceWithCurrency($fltPrice));
+
+		return '';
+	}
+
+
+	private function compileMessageNoModules()
+	{
+		$this->Template = new FrontendTemplate('mod_message');
+		$this->Template->class = 'payment_method';
+		$this->Template->hl = 'h2';
+		$this->Template->headline = $GLOBALS['TL_LANG']['ISO']['payment_method'];
+		$this->Template->type = 'error';
+		$this->Template->message = $GLOBALS['TL_LANG']['MSC']['noPaymentModules'];
+	}
+
+
+	/**
+	 * @param array $arrModules
+	 */
+	private function compileModules(&$arrModules)
+	{
+		$this->Template->paymentMethods = $arrModules;
+	}
+
 }
 
 ?>
