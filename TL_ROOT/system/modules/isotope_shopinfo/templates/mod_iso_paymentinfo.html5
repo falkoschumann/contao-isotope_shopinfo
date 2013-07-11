@@ -1,0 +1,13 @@
+<div class="<?php echo $this->class; ?> block"<?php echo $this->cssID; ?><?php if ($this->style): ?> style="<?php echo $this->style; ?>"<?php endif; ?>>
+<div class="inside">
+<h2><?php echo $this->headline; ?></h2>
+<?php foreach($this->paymentMethods as $method): ?>
+<div class="payment_method">
+	<div class="payment_label"><?php echo $method['label'] . $method['price']; ?></div>
+	<?php if ($method['note'] != ''): ?>
+	<div class="payment_note"><?php echo $method['note']; ?></div>
+	<?php endif; ?>
+</div>
+<?php endforeach; ?>
+</div>
+</div>
