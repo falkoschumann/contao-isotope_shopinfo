@@ -128,7 +128,7 @@ class ModuleIsotopeShippingInfo extends ModuleIsotope
 	 * @param Database_Result $result
 	 * @return IsotopeShipping|void
 	 */
-	private function createModule($result)
+	private function createModule(&$result)
 	{
 		$strClass = $GLOBALS['ISO_SHIP'][$result->type];
 		if (strlen($strClass) && $this->classFileExists($strClass))

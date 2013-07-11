@@ -128,7 +128,7 @@ class ModuleIsotopePaymentInfo extends ModuleIsotope
 	 * @param Database_Result $result
 	 * @return IsotopePayment|void
 	 */
-	private function createModule($result)
+	private function createModule(&$result)
 	{
 		$strClass = $GLOBALS['ISO_PAY'][$result->type];
 		if (strlen($strClass) && $this->classFileExists($strClass))
