@@ -3,8 +3,8 @@
 
 	<property file="build.properties"/>
 
-	<property name="release.version" value="1.0.0" description="release version: major.minor.patch"/>
-	<property name="release.status" value="beta1" description="release state: alpha1-alpha3, beta1-beta3, rc1-rc3, stable"/>
+	<property name="release.version" value="1.0.1" description="release version: major.minor.patch"/>
+	<property name="release.status" value="stable" description="release state: alpha1-alpha3, beta1-beta3, rc1-rc3, stable"/>
 	<property name="install.dir" location="${contao.dir}"/>
 
 	<target name="package">
