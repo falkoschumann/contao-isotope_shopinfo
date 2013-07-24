@@ -38,9 +38,9 @@
 /**
  * Frontend modules
  */
-$GLOBALS['TL_LANG']['FMD']['iso_paymentinfo'][0]	= 'Payment methods';
-$GLOBALS['TL_LANG']['FMD']['iso_paymentinfo'][1]	= 'Show informations about selected payment methods.';
-$GLOBALS['TL_LANG']['FMD']['iso_shippinginfo'][0]	= 'Shipping methods';
-$GLOBALS['TL_LANG']['FMD']['iso_shippinginfo'][1]	= 'Show informations about selected shipping methods';
+$GLOBALS['TL_LANG']['FMD']['iso_paymentinfo'][0]	= 'Payment Options';
+$GLOBALS['TL_LANG']['FMD']['iso_paymentinfo'][1]	= 'Show informations about selected payment options.';
+$GLOBALS['TL_LANG']['FMD']['iso_shippinginfo'][0]	= 'Shipping Options';
+$GLOBALS['TL_LANG']['FMD']['iso_shippinginfo'][1]	= 'Show informations about selected shipping options';
 
 ?>

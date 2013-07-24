@@ -111,7 +111,7 @@ class ModuleIsotopeShippingInfo extends ModuleIsotope
 				$objModule = $this->createModule($objModules);
 				if (!$objModule)
 					continue;
-	
+
 				$arrModules[] = array
 				(
 						'id'		=> $objModule->id,
@@ -133,10 +133,10 @@ class ModuleIsotopeShippingInfo extends ModuleIsotope
 		$strClass = $GLOBALS['ISO_SHIP'][$result->type];
 		if (strlen($strClass) && $this->classFileExists($strClass))
 			return new $strClass($result->row());
-	
+
 		return;
 	}
-	
+
 	/**
 	 * @param IsotopeShipping $objModule
 	 * @return string
@@ -152,8 +152,8 @@ class ModuleIsotopeShippingInfo extends ModuleIsotope
 
 		return '';
 	}
-	
-	
+
+
 	private function compileMessageNoModules()
 	{
 		$this->Template = new FrontendTemplate('mod_message');

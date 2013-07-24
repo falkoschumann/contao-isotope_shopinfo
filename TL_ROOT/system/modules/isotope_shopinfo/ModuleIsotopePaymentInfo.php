@@ -63,7 +63,7 @@ class ModuleIsotopePaymentInfo extends ModuleIsotope
 		return parent::generate();
 	}
 
-	
+
 	/**
 	 * @return string
 	 */
@@ -77,7 +77,7 @@ class ModuleIsotopePaymentInfo extends ModuleIsotope
 		$objTemplate->href = 'contao/main.php?do=themes&amp;table=tl_module&amp;act=edit&amp;id=' . $this->id;
 		return $objTemplate->parse();
 	}
-	
+
 
 	protected function compile()
 	{
@@ -91,7 +91,7 @@ class ModuleIsotopePaymentInfo extends ModuleIsotope
 
 	/**
 	 * Return an array of associative arrays with keys id, label, price and note.
-	 * 
+	 *
 	 * @return array
 	 */
 	private function getModules()
